@@ -32,12 +32,12 @@ DepartmentID INT
 ); 	
 +++++++++++++++++++++++++++++++++++++
 
-CREATE TABLE Job (
-JobID INT PRIMARY KEY,
-JobtTitle VARCHAR2(20),
-Authority VARCHAR2(20),
-JobDescription VARCHAR2(80),
-DepartmentID INT
+CREATE TABLE Event (
+EventID INT NOT NULL ,
+EventName VARCHAR2(20) NOT NULL ,
+EventLocation VARCHAR2(60) NOT NULL ,
+StartDate DATE NOT NULL ,
+EndDate DATE NOT NULL
 );
 +++++++++++++++++++++++++++++++++++++++++++++
 CREATE TABLE Department (
