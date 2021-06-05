@@ -1,0 +1,217 @@
+
+CREATE TABLE Piece (
+PieceName VARCHAR2(40) PRIMARY KEY ,
+PieceDescription VARCHAR2(200),
+DisplaySatatus varchar(20) not null,
+Civilization VARCHAR2(60),
+HistoricalAge VARCHAR2(60),
+PieceLocation VARCHAR2(100) NOT NULL,
+Centruy VARCHAR2(15),
+NumericalAge INT, 
+Material VARCHAR2(20) NOT NULL, 
+Collection VARCHAR2(20) NOT NULL,
+EstimatedPrice INT NOT NULL,
+PieceLength DECIMAL(4, 2) ,
+Width DECIMAL(4, 2) ,
+Height DECIMAL(4, 2),
+DiscovererID INT,
+HallNumber INT,
+SponsorID INT,
+DamageID INT,
+EventID INT,
+DiscovererName VARCHAR2(20) NOT NULL,
+DiscoveryDate Date NOT NULL
+);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+CREATE TABLE Job (
+JobID INT PRIMARY KEY,
+JobtTitle VARCHAR2(20),
+Authority VARCHAR2(20),
+JobDescription VARCHAR2(80),
+DepartmentID INT
+); 	
++++++++++++++++++++++++++++++++++++++
+
+CREATE TABLE Job (
+JobID INT PRIMARY KEY,
+JobtTitle VARCHAR2(20),
+Authority VARCHAR2(20),
+JobDescription VARCHAR2(80),
+DepartmentID INT
+);
++++++++++++++++++++++++++++++++++++++++++++++
+CREATE TABLE Department (
+DepartmentID INT primary key,
+DepartmentName VARCHAR2(20),
+MangerID INT
+);
++++++++++++++++++++++++++++++++++++++++++++
+CREATE TABLE M_EMPLOYEE (
+EmployeeID int PRIMARY KEY,
+FirstName VARCHAR2(20),
+LastName VARCHAR2(20),
+Address VARCHAR2(100),
+EmpRole VARCHAR2(40),
+JobID  INT,
+DepartmentID INT
+);
++++++++++++++++++++++++++++++++++++++++++++++++++++
+CREATE TABLE WORK (
+HallNumber INT,
+EmployeeID INT,
+primary key (HallNumber, EmployeeID)
+);
+++++++++++++++++++++++++++++++++++++++++++
+create table Sponsor(
+SponsorID int primary key ,
+SponsorName varchar(20) not null,
+FundType varchar(40) not null
+);
++++++++++++++++++++++++++++++++++++++++++++++
+create table Damage (
+DamageID int primary key ,
+DamageType varchar(40) not null,
+RepairMethod varchar(50) 
+);
+++++++++++++++++++++++++++++++++++++++++
+CREATE TABLE Affordability (
+DamageID INT,
+SponsorID INT,
+FundAmount INT,
+Primary key (DamageID, SponsorID)
+);
+++++++++++++++++++++++++++++++++++++++
+CREATE TABLE Event_Finance (
+SponsorID int ,
+EventID int ,
+FundAmount int not null,
+primary key ( SponsorID, EventID)
+);
++++++++++++++++++++++++++++++++++++
+CREATE TABLE Occurance (
+PieceName varchar(20),
+DamageID INT,
+Primary key (PieceName, DamageID)
+);
+
+CREATE TABLE Piece_Finance(
+PieceName varchar(20),
+SponsorID INT,
+FundAmount INT not null,
+Primary key (PieceName, SponsorID));
+
+create table Creation(
+CreatorID INT,
+PieceName  varchar(20),
+primary key (CreatorID, PieceName )
+);
+
+create table Creator (
+CreatorID INT primary key,
+CreatorName varchar(20) not null,
+BirthDate Date,
+DeathDate Date ,
+Nationality varchar(20) not null,
+CreationTime Date  ,
+Background varchar(100),
+HallNumber INT,
+Number_of_Pieces int not null
+);
+
+create table Visit (
+HallNumber int ,
+VisitorID int,
+VisitDate date NOT NULL,
+Primary key (HallNumber, VisitorID)
+);
+create table Visitor(
+VisitorID INT PRIMARY KEY,
+VisitorName  varchar(20) not null,
+Nationality varchar(20)  not null,
+NationalID varchar(20) not null,
+Organization varchar(20) ,
+VisitsNumber INT CHECK (VisitsNumber >0)
+);
+
+CREATE TABLE Hall (
+HallNumber int primary key ,
+SuperVisorName varchar(20) not null,
+Civilization varchar (30),
+SecurityLevel INT Not null
+);
+create table Discoverer (
+DiscovererID int primary key ,
+DiscovererName varchar(20) not null ,
+Country varchar(20) not null,
+Biography varchar(200) ,
+HallNumber int, 
+PiecesNumber int check (PiecesNumber >0 ) /* totoal number of pieces */
+);
+create table EmployeePhone(
+EmployeeID INT PRIMARY KEY,
+phone varchar(20)
+);
+create table PreviousMuseum(
+PieceName varchar(20) primary key,
+PreMuseum varchar(40)
+);
+/* Adding foreign keys for piece  */ 
+Alter table piece 
+ADD FOREIGN KEY (DiscovererID)  REFERENCES Discoverer ( DiscovererID) ON DELETE SET NULL; 
+Alter table piece  ADD FOREIGN KEY (HallNumber) REFERENCES Hall ( HallNumber) ON DELETE SET NULL; 
+Alter table piece  ADD FOREIGN KEY  (SponsorID) REFERENCES Sponsor ( SponsorID ) ON DELETE SET NULL; 
+Alter table piece  ADD FOREIGN KEY (DamageID) REFERENCES Damage  ( DamageID) ON DELETE SET NULL ;
+Alter table piece  ADD FOREIGN KEY (EventID) REFERENCES Event ( EventID) ON DELETE SET NULL ;
+
+/* ADD FOREGN KEYS FOR Creator */ 
+Alter table Creator  ADD FOREIGN KEY (HallNumber) REFERENCES Hall ( HallNumber) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR  job*/ 
+Alter table Job  ADD FOREIGN KEY (DepartmentID) REFERENCES Department ( DepartmentID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR  Employee*/ 
+Alter table M_Employee  ADD FOREIGN KEY (DepartmentID) REFERENCES Department ( DepartmentID) ON DELETE SET NULL;
+Alter table M_Employee  ADD FOREIGN KEY (JobID) REFERENCES Job ( JobID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR  multivalue attribute emoloyee phone*/ 
+Alter table EmployeePhone  ADD FOREIGN KEY (EmployeeID) REFERENCES M_Employee ( EmployeeID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR  multivalue piecec previous museums*/ 
+Alter table PreviousMuseum  ADD FOREIGN KEY (PieceName) REFERENCES Piece ( PieceName) ON DELETE SET NULL; 
+
+ /* ADD FOREIGN KEYS FOR  Event finance */ 
+Alter table Event_Finance  ADD FOREIGN KEY (SponsorID) REFERENCES Sponsor( SponsorID) ON DELETE SET NULL; 
+Alter table Event_Finance  ADD FOREIGN KEY (EventID) REFERENCES Event( EventID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR  piece_finance*/ 
+Alter table Piece_Finance  ADD FOREIGN KEY (PieceName) REFERENCES Piece( PieceName) ON DELETE SET NULL; 
+Alter table Piece_Finance  ADD FOREIGN KEY (SponsorID) REFERENCES Sponsor( SponsorID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR  Affordability */ 
+Alter table  Affordability  ADD FOREIGN KEY (DamageID) REFERENCES Damage( DamageID) ON DELETE SET NULL; 
+Alter table  Affordability  ADD FOREIGN KEY (SponsorID) REFERENCES Sponsor( SponsorID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR   work */ 
+Alter table  Work  ADD FOREIGN KEY (HallNumber) REFERENCES Hall( HallNumber) ON DELETE SET NULL; 
+Alter table  Work  ADD FOREIGN KEY (EmployeeID) REFERENCES M_Employee( EmployeeID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR   Occurance  */ 
+
+Alter table  Occurance  ADD FOREIGN KEY (PieceName) REFERENCES Piece( PieceName) ON DELETE SET NULL; 
+Alter table  Occurance  ADD FOREIGN KEY (DamageID) REFERENCES Damage( DamageID) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR   Visit  */ 
+Alter table  Visit  ADD FOREIGN KEY (VisitorID) REFERENCES Visitor( VisitorID) ON DELETE SET NULL; 
+Alter table  Visit  ADD FOREIGN KEY (HallNumber) REFERENCES Hall( HallNumber) ON DELETE SET NULL; 
+
+/* ADD FOREGN KEYS FOR   Creation  */ 
+Alter table  Creation  ADD FOREIGN KEY (CreatorID) REFERENCES Creator( CreatorID) ON DELETE SET NULL; 
+Alter table  Creation  ADD FOREIGN KEY (PieceName) REFERENCES Piece( PieceName) ON DELETE SET NULL; 
+
+
+
+
+
+
+
+
